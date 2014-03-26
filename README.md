@@ -3,7 +3,7 @@ Azure Cloud Plugin for Elasticsearch
 
 The Azure Cloud plugin allows to use Azure API for the unicast discovery mechanism.
 
-In order to install the plugin, simply run: `bin/plugin -install elasticsearch/elasticsearch-cloud-azure/2.1.0`.
+In order to install the plugin, simply run: `bin/plugin -install elasticsearch/elasticsearch-cloud-azure/2.2.0`.
 
 * For master elasticsearch versions, look at [master branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/master).
 * For 1.1.x elasticsearch versions, look at [es-1.1 branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/es-1.1).
@@ -12,11 +12,11 @@ In order to install the plugin, simply run: `bin/plugin -install elasticsearch/e
 
 |     Azure Cloud Plugin      |    elasticsearch    | Release date |
 |-----------------------------|---------------------|:------------:|
-| 2.2.0-SNAPSHOT              | 1.1.0 -> 1.1        |  XXXX-XX-XX  |
+| 2.2.0                       | 1.1.0 -> 1.1        |  2014-03-26  |
 
 Please read documentation relative to the version you are using:
 
-* [2.2.0-SNAPSHOT](https://github.com/elasticsearch/elasticsearch-cloud-azure/blob/es-1.1/README.md)
+* [2.2.0](https://github.com/elasticsearch/elasticsearch-cloud-azure/blob/v2.2.0/README.md)
 
 
 Azure Virtual Machine Discovery
