@@ -48,7 +48,7 @@ public abstract class AbstractAzureComputeServiceTest extends AbstractAzureTest 
                 // We add a fake subscription_id to start mock compute service
                 .put("cloud.azure.subscription_id", "fake")
                 .put("cloud.azure.refresh_interval", "5s");
-
+        builder.put(super.nodeSettings(nodeOrdinal));
         return builder.build();
     }
 }
