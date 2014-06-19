@@ -41,14 +41,22 @@ public abstract class AbstractAzureComputeServiceTest extends AbstractAzureTest 
         assertEquals(expected, nodeInfos.getNodes().length);
     }
 
-    @Override
-    protected Settings nodeSettings(int nodeOrdinal) {
+    protected Settings settingsBuilder() {
         ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder()
+                .put("discovery.type", "azure")
                 .put("cloud.azure.api.impl", mock)
                 // We add a fake subscription_id to start mock compute service
                 .put("cloud.azure.subscription_id", "fake")
-                .put("cloud.azure.refresh_interval", "5s");
-        builder.put(super.nodeSettings(nodeOrdinal));
+                .put("cloud.azure.refresh_interval", "5s")
+                .put("cloud.azure.keystore", "dummy")
+                .put("cloud.azure.password", "dummy")
+                .put("cloud.azure.service_name", "dummy")
+                .put("cloud.azure.refresh_interval", "5s")
+                // Make the tests run faster
+                .put("discovery.zen.join.timeout", "100ms")
+                .put("discovery.zen.ping.timeout", "10ms")
+                .put("discovery.initial_state_timeout", "300ms");
+
         return builder.build();
     }
 }
