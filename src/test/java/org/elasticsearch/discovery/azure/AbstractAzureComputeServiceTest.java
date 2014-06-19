@@ -24,6 +24,7 @@ import org.elasticsearch.cloud.azure.AbstractAzureTest;
 import org.elasticsearch.cloud.azure.AzureComputeService;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.plugins.PluginsService;
 
 public abstract class AbstractAzureComputeServiceTest extends AbstractAzureTest {
 
@@ -43,6 +44,7 @@ public abstract class AbstractAzureComputeServiceTest extends AbstractAzureTest 
 
     protected Settings settingsBuilder() {
         ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder()
+                .put("plugins." + PluginsService.LOAD_PLUGIN_FROM_CLASSPATH, true)
                 .put("discovery.type", "azure")
                 .put("cloud.azure.api.impl", mock)
                 // We add a fake subscription_id to start mock compute service

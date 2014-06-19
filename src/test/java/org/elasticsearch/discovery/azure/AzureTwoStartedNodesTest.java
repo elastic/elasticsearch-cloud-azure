@@ -37,11 +37,11 @@ public class AzureTwoStartedNodesTest extends AbstractAzureComputeServiceTest {
     @Test
     public void two_nodes_should_run() {
         logger.info("--> start first node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), notNullValue());
 
         logger.info("--> start another node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), notNullValue());
 
         // We expect having 2 nodes as part of the cluster, let's test that

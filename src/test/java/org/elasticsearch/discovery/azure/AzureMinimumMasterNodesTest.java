@@ -25,6 +25,8 @@ import org.elasticsearch.discovery.MasterNotDiscoveredException;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -51,9 +53,9 @@ public class AzureMinimumMasterNodesTest extends AbstractAzureComputeServiceTest
     }
 
     @Test
-    public void simpleOnlyMasterNodeElection() {
+    public void simpleOnlyMasterNodeElection() throws IOException {
         logger.info("--> start data node / non master node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         try {
             assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("100ms").execute().actionGet().getState().nodes().masterNodeId(), nullValue());
             fail("should not be able to find master");
@@ -61,11 +63,11 @@ public class AzureMinimumMasterNodesTest extends AbstractAzureComputeServiceTest
             // all is well, no master elected
         }
         logger.info("--> start another node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), notNullValue());
 
         logger.info("--> stop master node");
-        cluster().stopCurrentMasterNode();
+        internalCluster().stopCurrentMasterNode();
 
         try {
             assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), nullValue());
@@ -75,7 +77,7 @@ public class AzureMinimumMasterNodesTest extends AbstractAzureComputeServiceTest
         }
 
         logger.info("--> start another node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), notNullValue());
     }
 }

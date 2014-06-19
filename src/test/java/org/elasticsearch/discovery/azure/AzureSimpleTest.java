@@ -37,7 +37,7 @@ public class AzureSimpleTest extends AbstractAzureComputeServiceTest {
     @Test
     public void one_node_should_run() {
         logger.info("--> start one node");
-        cluster().startNode(settingsBuilder());
+        internalCluster().startNode(settingsBuilder());
         assertThat(client().admin().cluster().prepareState().setMasterNodeTimeout("1s").execute().actionGet().getState().nodes().masterNodeId(), notNullValue());
 
         // We expect having 1 node as part of the cluster, let's test that
