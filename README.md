@@ -3,23 +3,10 @@ Azure Cloud Plugin for Elasticsearch
 
 The Azure Cloud plugin allows to use Azure API for the unicast discovery mechanism.
 
-In order to install the plugin, simply run: `bin/plugin -install elasticsearch/elasticsearch-cloud-azure/2.3.0`.
+## Version 2.3.1-SNAPSHOT for Elasticsearch: 1.2
 
-* For master elasticsearch versions, look at [master branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/master).
-* For 1.2.x elasticsearch versions, look at [es-1.2 branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/es-1.2).
-* For 1.1.x elasticsearch versions, look at [es-1.1 branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/es-1.1).
-* For 1.0.x elasticsearch versions, look at [es-1.0 branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/es-1.0).
-* For 0.90.x elasticsearch versions, look at [es-0.90 branch](https://github.com/elasticsearch/elasticsearch-cloud-azure/tree/es-0.90).
-
-|     Azure Cloud Plugin      |    elasticsearch    | Release date |
-|-----------------------------|---------------------|:------------:|
-| 2.3.1-SNAPSHOT              | 1.2.0 -> 1.2        |  XXXX-XX-XX  |
-| 2.3.0                       | 1.2.0 -> 1.2        |  2014-06-19  |
-
-Please read documentation relative to the version you are using:
-
-* [2.3.1-SNAPSHOT](https://github.com/elasticsearch/elasticsearch-cloud-azure/blob/es-1.2/README.md)
-* [2.3.0](https://github.com/elasticsearch/elasticsearch-cloud-azure/blob/v2.3.0/README.md)
+If you are looking for another version documentation, please refer to the 
+[compatibility matrix](https://github.com/elasticsearch/elasticsearch-cloud-azure/#azure-cloud-plugin-for-elasticsearch).
 
 
 Azure Virtual Machine Discovery
@@ -210,11 +197,15 @@ ssh azure-elasticsearch-cluster.cloudapp.net
 Once connected, install Elasticsearch:
 
 ```sh
-# Install Latest OpenJDK
-# If you would like to use Oracle JDK instead, read the following:
-# http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
+# Install Latest Java version
+# Read http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html for details
+sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
-sudo apt-get install openjdk-7-jre-headless
+sudo apt-get install oracle-java7-installer
+
+# If you want to install OpenJDK instead
+# sudo apt-get update
+# sudo apt-get install openjdk-7-jre-headless
 
 # Download Elasticsearch
 curl -s https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.0.deb -o elasticsearch-1.0.0.deb
