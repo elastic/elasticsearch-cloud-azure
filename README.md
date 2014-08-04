@@ -3,7 +3,7 @@ Azure Cloud Plugin for Elasticsearch
 
 The Azure Cloud plugin allows to use Azure API for the unicast discovery mechanism.
 
-## Version 2.4.0 for Elasticsearch: 1.3
+## Version 2.5.0 for Elasticsearch: 1.x
 
 If you are looking for another version documentation, please refer to the 
 [compatibility matrix](https://github.com/elasticsearch/elasticsearch-cloud-azure/#azure-cloud-plugin-for-elasticsearch).
