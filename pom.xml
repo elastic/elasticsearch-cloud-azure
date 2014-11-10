@@ -44,7 +44,8 @@ governing permissions and limitations under the License. -->
 
     <properties>
         <elasticsearch.version>1.5.0-SNAPSHOT</elasticsearch.version>
-        <lucene.version>4.10.2</lucene.version>
+        <lucene.version>4.10.3</lucene.version>
+        <lucene.maven.version>4.10.3-snapshot-1637985</lucene.maven.version>
         <tests.output>onerror</tests.output>
         <tests.shuffle>true</tests.shuffle>
         <tests.output>onerror</tests.output>
@@ -52,6 +53,13 @@ governing permissions and limitations under the License. -->
         <tests.jvm.argline></tests.jvm.argline>
         <es.logger.level>INFO</es.logger.level>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>Lucene Snapshots</id>
+            <url>https://download.elasticsearch.org/lucenesnapshots/1637985/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -75,7 +83,7 @@ governing permissions and limitations under the License. -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-test-framework</artifactId>
-            <version>${lucene.version}</version>
+            <version>${lucene.maven.version}</version>
             <scope>test</scope>
         </dependency>
 
