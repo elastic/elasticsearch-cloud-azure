@@ -19,6 +19,7 @@
 
 package org.elasticsearch.discovery.azure;
 
+import org.elasticsearch.Version;
 import org.elasticsearch.cloud.azure.AzureComputeService;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
@@ -48,7 +49,8 @@ public class AzureDiscovery extends ZenDiscovery {
     public AzureDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
                           ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
                           DiscoveryNodeService discoveryNodeService, AzureComputeService azureService, NetworkService networkService,
-                          DiscoverySettings discoverySettings, ElectMasterService electMasterService) {
+                          DiscoverySettings discoverySettings, ElectMasterService electMasterService,
+                          Version version) {
         super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
                 discoveryNodeService, pingService, electMasterService, discoverySettings);
         if (settings.getAsBoolean("cloud.enabled", true)) {
@@ -64,7 +66,7 @@ public class AzureDiscovery extends ZenDiscovery {
             if (unicastZenPing != null) {
                 // update the unicast zen ping to add cloud hosts provider
                 // and, while we are at it, use only it and not the multicast for example
-                unicastZenPing.addHostsProvider(new AzureUnicastHostsProvider(settings, azureService, transportService, networkService));
+                unicastZenPing.addHostsProvider(new AzureUnicastHostsProvider(settings, azureService, transportService, networkService, version));
                 pingService.zenPings(ImmutableList.of(unicastZenPing));
             } else {
                 logger.warn("failed to apply azure unicast discovery, no unicast ping found");
