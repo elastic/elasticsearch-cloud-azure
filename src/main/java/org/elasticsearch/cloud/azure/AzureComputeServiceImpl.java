@@ -83,7 +83,7 @@ public class AzureComputeServiceImpl extends AbstractLifecycleComponent<AzureCom
         // Check that we have all needed properties
         try {
             socketFactory = getSocketFactory(keystore, password);
-            if (logger.isTraceEnabled()) logger.trace("creating new Azure client for [{}], [{}], [{}], [{}]",
+            if (logger.isTraceEnabled()) logger.trace("creating new Azure client for [{}], [{}], [{}]",
                     subscription_id, service_name, port_name);
         } catch (Exception e) {
             // Can not start Azure Client

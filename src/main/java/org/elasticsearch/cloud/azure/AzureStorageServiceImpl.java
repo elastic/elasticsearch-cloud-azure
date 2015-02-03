@@ -42,6 +42,7 @@ import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsFilter;
+import org.elasticsearch.repositories.RepositoryException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -128,11 +129,16 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
 
     @Override
     public void createContainer(String container) throws URISyntaxException, StorageException {
-        CloudBlobContainer blob_container = client.getContainerReference(container);
-        if (logger.isTraceEnabled()) {
-            logger.trace("creating container [{}]", container);
+        try {
+            CloudBlobContainer blob_container = client.getContainerReference(container);
+            if (logger.isTraceEnabled()) {
+                logger.trace("creating container [{}]", container);
+            }
+            blob_container.createIfNotExist();
+        } catch (IllegalArgumentException e) {
+            logger.trace("fails creating container [{}]", container, e.getMessage());
+            throw new RepositoryException(container, e.getMessage());
         }
-        blob_container.createIfNotExist();
     }
 
     @Override
@@ -185,7 +191,6 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
                 logger.trace("blob found. removing.",
                         container, blob);
             }
-            // TODO A REVOIR
             CloudBlockBlob azureBlob = blob_container.getBlockBlobReference(blob);
             azureBlob.delete();
         }
