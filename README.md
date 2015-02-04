@@ -156,7 +156,7 @@ azure vm create azure-elasticsearch-cluster \
                 --vm-size extrasmall \
                 --ssh 22 \
                 --ssh-cert /tmp/azure-certificate.pem \
-                elasticsearch password1234!!
+                elasticsearch password1234\!\!
 ```
 
 You should see something like:
@@ -306,7 +306,7 @@ azure vm create azure-elasticsearch-cluster \
                 --vm-size extrasmall \
                 --ssh 22 \
                 --ssh-cert /tmp/azure-certificate.pem \
-                elasticsearch password1234!!
+                elasticsearch password1234\!\!
 ```
 
 > **Note:** It could happen that azure changes the endpoint public IP address.
@@ -331,7 +331,7 @@ for x in $(seq  2 10)
 		                --ssh $((21 + $x)) \
 		                --ssh-cert /tmp/azure-certificate.pem \
 		                --connect \
-		                elasticsearch password1234!!
+		                elasticsearch password1234\!\!
 	done
 ```
 
