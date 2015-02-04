@@ -60,9 +60,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
     public boolean blobExists(String blobName) {
         try {
             return blobStore.client().blobExists(blobStore.container(), buildKey(blobName));
-        } catch (URISyntaxException e) {
-            logger.warn("can not access [{}] in container {{}}: {}", blobName, blobStore.container(), e.getMessage());
-        } catch (StorageException e) {
+        } catch (URISyntaxException | StorageException e) {
             logger.warn("can not access [{}] in container {{}}: {}", blobName, blobStore.container(), e.getMessage());
         }
         return false;
@@ -99,10 +97,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
         try {
             blobStore.client().deleteBlob(blobStore.container(), buildKey(blobName));
             return true;
-        } catch (URISyntaxException e) {
-            logger.warn("can not access [{}] in container {{}}: {}", blobName, blobStore.container(), e.getMessage());
-            throw new IOException(e);
-        } catch (StorageException e) {
+        } catch (URISyntaxException | StorageException e) {
             logger.warn("can not access [{}] in container {{}}: {}", blobName, blobStore.container(), e.getMessage());
             throw new IOException(e);
         }
@@ -113,13 +108,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
         try {
             return blobStore.client().listBlobsByPrefix(blobStore.container(), keyPath, prefix);
-        } catch (URISyntaxException e) {
-            logger.warn("can not access [{}] in container {{}}: {}", prefix, blobStore.container(), e.getMessage());
-            throw new IOException(e);
-        } catch (StorageException e) {
-            logger.warn("can not access [{}] in container {{}}: {}", prefix, blobStore.container(), e.getMessage());
-            throw new IOException(e);
-        } catch (ServiceException e) {
+        } catch (URISyntaxException | StorageException | ServiceException e) {
             logger.warn("can not access [{}] in container {{}}: {}", prefix, blobStore.container(), e.getMessage());
             throw new IOException(e);
         }
