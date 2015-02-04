@@ -20,6 +20,7 @@
 package org.elasticsearch.plugin.cloud.azure;
 
 import org.elasticsearch.cloud.azure.AzureModule;
+import org.elasticsearch.cloud.azure.management.AzureComputeService;
 import org.elasticsearch.cloud.azure.storage.AzureStorageService;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.inject.Module;
@@ -82,5 +83,19 @@ public class CloudAzurePlugin extends AbstractPlugin {
                 "cloud.azure.storage." + AzureStorageService.Fields.ACCOUNT, logger);
         checkDeprecatedSettings(settings, "cloud.azure." + AzureStorageService.Fields.KEY_DEPRECATED,
                 "cloud.azure.storage." + AzureStorageService.Fields.KEY, logger);
+
+        // TODO Remove in 3.0.0
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.KEYSTORE_DEPRECATED,
+                "cloud.azure.management." + AzureComputeService.Fields.KEYSTORE_PATH, logger);
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.PASSWORD_DEPRECATED,
+                "cloud.azure.management." + AzureComputeService.Fields.KEYSTORE_PASSWORD, logger);
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.SERVICE_NAME_DEPRECATED,
+                "cloud.azure.management." + AzureComputeService.Fields.SERVICE_NAME, logger);
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.SUBSCRIPTION_ID_DEPRECATED,
+                "cloud.azure.management." + AzureComputeService.Fields.SUBSCRIPTION_ID, logger);
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.HOST_TYPE_DEPRECATED,
+                "discovery.azure." + AzureComputeService.Fields.HOST_TYPE, logger);
+        checkDeprecatedSettings(settings, "cloud.azure." + AzureComputeService.Fields.PORT_NAME_DEPRECATED,
+                "discovery.azure." + AzureComputeService.Fields.ENDPOINT_NAME, logger);
     }
 }

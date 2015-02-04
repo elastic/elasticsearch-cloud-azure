@@ -20,7 +20,7 @@
 package org.elasticsearch.discovery.azure;
 
 import org.elasticsearch.Version;
-import org.elasticsearch.cloud.azure.AzureComputeService;
+import org.elasticsearch.cloud.azure.management.AzureComputeService;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
 import org.elasticsearch.cluster.node.DiscoveryNodeService;
