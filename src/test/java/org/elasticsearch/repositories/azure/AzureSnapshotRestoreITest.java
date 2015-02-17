@@ -27,7 +27,7 @@ import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotR
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.ClusterAdminClient;
 import org.elasticsearch.cloud.azure.AbstractAzureTest;
-import org.elasticsearch.cloud.azure.AzureStorageService;
+import org.elasticsearch.cloud.azure.storage.AzureStorageService;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.base.Predicate;
@@ -69,6 +69,14 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
     private String getContainerName() {
         String testName = "it-".concat(Strings.toUnderscoreCase(getTestName()).replaceAll("_", "-"));
         return testName.contains(" ") ? Strings.split(testName, " ")[0] : testName;
+    }
+
+    @Override
+    protected Settings nodeSettings(int nodeOrdinal) {
+        return ImmutableSettings.builder().put(super.nodeSettings(nodeOrdinal))
+                // In snapshot tests, we explicitly disable cloud discovery
+                .put("discovery.type", "local")
+                .build();
     }
 
     @Override

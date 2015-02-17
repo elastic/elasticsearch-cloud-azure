@@ -19,22 +19,18 @@
 
 package org.elasticsearch.cloud.azure;
 
-import java.util.Set;
+import org.elasticsearch.ElasticsearchIllegalStateException;
 
-/**
- *
- */
-public interface AzureComputeService {
-
-    static public final class Fields {
-        public static final String SUBSCRIPTION_ID = "subscription_id";
-        public static final String SERVICE_NAME = "service_name";
-        public static final String KEYSTORE = "keystore";
-        public static final String PASSWORD = "password";
-        public static final String REFRESH = "refresh_interval";
-        public static final String PORT_NAME = "port_name";
-        public static final String HOST_TYPE = "host_type";
+public class AzureServiceDisableException extends ElasticsearchIllegalStateException {
+    public AzureServiceDisableException() {
+        super(null);
     }
 
-    public Set<Instance> instances();
+    public AzureServiceDisableException(String msg) {
+        super(msg);
+    }
+
+    public AzureServiceDisableException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

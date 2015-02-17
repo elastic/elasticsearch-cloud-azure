@@ -17,32 +17,20 @@
  * under the License.
  */
 
-package org.elasticsearch.discovery.azure;
+package org.elasticsearch.cloud.azure;
 
-import org.elasticsearch.cloud.azure.Instance;
-import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.ElasticsearchIllegalStateException;
 
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * Mock Azure API with a single started node
- */
-public class AzureComputeServiceSimpleMock extends AzureComputeServiceAbstractMock {
-
-    @Inject
-    protected AzureComputeServiceSimpleMock(Settings settings) {
-        super(settings);
+public class AzureServiceRemoteException extends ElasticsearchIllegalStateException {
+    public AzureServiceRemoteException() {
+        super(null);
     }
 
-    @Override
-    public Set<Instance> instances() {
-        Set<Instance> instances = new HashSet<>();
-        Instance azureHost = new Instance();
-        azureHost.setPrivateIp("127.0.0.1");
-        instances.add(azureHost);
+    public AzureServiceRemoteException(String msg) {
+        super(msg);
+    }
 
-        return instances;
+    public AzureServiceRemoteException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

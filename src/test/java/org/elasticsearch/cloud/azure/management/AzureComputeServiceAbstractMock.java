@@ -17,10 +17,9 @@
  * under the License.
  */
 
-package org.elasticsearch.discovery.azure;
+package org.elasticsearch.cloud.azure.management;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.cloud.azure.AzureComputeService;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.settings.Settings;
 
