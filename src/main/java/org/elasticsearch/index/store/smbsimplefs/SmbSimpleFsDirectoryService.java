@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.elasticsearch.index.store.fs;
+package org.elasticsearch.index.store.smbsimplefs;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockFactory;
@@ -28,6 +28,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.settings.IndexSettings;
 import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.index.store.IndexStore;
+import org.elasticsearch.index.store.fs.FsDirectoryService;
 
 import java.io.File;
 import java.io.IOException;

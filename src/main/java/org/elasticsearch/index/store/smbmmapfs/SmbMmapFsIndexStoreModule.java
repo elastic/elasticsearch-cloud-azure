@@ -17,15 +17,15 @@
  * under the License.
  */
 
-package org.elasticsearch.index.store.fs;
+package org.elasticsearch.index.store.smbmmapfs;
 
 import org.elasticsearch.common.inject.AbstractModule;
 import org.elasticsearch.index.store.IndexStore;
 
-public class SmbSimpleFsIndexStoreModule extends AbstractModule {
+public class SmbMmapFsIndexStoreModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(IndexStore.class).to(SmbSimpleFsIndexStore.class).asEagerSingleton();
+        bind(IndexStore.class).to(SmbMmapFsIndexStore.class).asEagerSingleton();
     }
 }
