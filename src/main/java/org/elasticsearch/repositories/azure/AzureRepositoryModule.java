@@ -21,7 +21,6 @@ package org.elasticsearch.repositories.azure;
 
 import org.elasticsearch.cloud.azure.AzureModule;
 import org.elasticsearch.common.inject.AbstractModule;
-import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.Settings;
@@ -37,7 +36,6 @@ public class AzureRepositoryModule extends AbstractModule {
     protected final ESLogger logger;
     private Settings settings;
 
-    @Inject
     public AzureRepositoryModule(Settings settings) {
         super();
         this.logger = Loggers.getLogger(getClass(), settings);

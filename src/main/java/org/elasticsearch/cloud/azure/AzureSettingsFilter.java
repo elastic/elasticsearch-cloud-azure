@@ -19,10 +19,11 @@
 
 package org.elasticsearch.cloud.azure;
 
-import org.elasticsearch.cloud.azure.management.AzureComputeService;
-import org.elasticsearch.cloud.azure.storage.AzureStorageService;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.SettingsFilter;
+
+import static org.elasticsearch.cloud.azure.management.AzureComputeService.Management.*;
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.*;
 
 /**
  * Filtering cloud.azure.* settings
@@ -31,30 +32,25 @@ public class AzureSettingsFilter implements SettingsFilter.Filter {
 
     @Override
     public void filter(ImmutableSettings.Builder settings) {
-        // Cloud global settings
-        settings.remove("cloud.azure." + AzureComputeService.Fields.REFRESH);
+        // Cloud management API settings we need to hide
+        settings.remove(KEYSTORE_PATH);
+        settings.remove(KEYSTORE_PASSWORD);
+        settings.remove(KEYSTORE_TYPE);
+        settings.remove(SUBSCRIPTION_ID);
 
-        // Cloud management API settings
-        settings.remove("cloud.azure.management." + AzureComputeService.Fields.KEYSTORE_PATH);
-        settings.remove("cloud.azure.management." + AzureComputeService.Fields.KEYSTORE_PASSWORD);
-        settings.remove("cloud.azure.management." + AzureComputeService.Fields.KEYSTORE_TYPE);
-        settings.remove("cloud.azure.management." + AzureComputeService.Fields.SUBSCRIPTION_ID);
-        settings.remove("cloud.azure.management." + AzureComputeService.Fields.SERVICE_NAME);
-
-        // Deprecated Cloud management API settings
+        // Deprecated Cloud management API settings we need to hide
         // TODO Remove in 3.0.0
-        settings.remove("cloud.azure." + AzureComputeService.Fields.KEYSTORE_DEPRECATED);
-        settings.remove("cloud.azure." + AzureComputeService.Fields.PASSWORD_DEPRECATED);
-        settings.remove("cloud.azure." + AzureComputeService.Fields.SUBSCRIPTION_ID_DEPRECATED);
-        settings.remove("cloud.azure." + AzureComputeService.Fields.SERVICE_NAME_DEPRECATED);
+        settings.remove(KEYSTORE_DEPRECATED);
+        settings.remove(PASSWORD_DEPRECATED);
+        settings.remove(SUBSCRIPTION_ID_DEPRECATED);
 
-        // Cloud storage API settings
-        settings.remove("cloud.azure.storage." + AzureStorageService.Fields.ACCOUNT);
-        settings.remove("cloud.azure.storage." + AzureStorageService.Fields.KEY);
+        // Cloud storage API settings needed to be hidden
+        settings.remove(ACCOUNT);
+        settings.remove(KEY);
 
-        // Deprecated Cloud storage API settings
+        // Deprecated Cloud storage API settings needed to be hidden
         // TODO Remove in 3.0.0
-        settings.remove("cloud.azure." + AzureStorageService.Fields.ACCOUNT_DEPRECATED);
-        settings.remove("cloud.azure." + AzureStorageService.Fields.KEY_DEPRECATED);
+        settings.remove(ACCOUNT_DEPRECATED);
+        settings.remove(KEY_DEPRECATED);
     }
 }

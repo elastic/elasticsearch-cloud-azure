@@ -38,6 +38,8 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.*;
+
 /**
  *
  */
@@ -54,10 +56,9 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
     public AzureStorageServiceImpl(Settings settings, SettingsFilter settingsFilter) {
         super(settings);
         settingsFilter.addFilter(new AzureSettingsFilter());
-
-        // We try to load storage API settings from `repositories.azure.`
-        account = componentSettings.get(Fields.ACCOUNT, settings.get("cloud.azure." + Fields.ACCOUNT_DEPRECATED));
-        key = componentSettings.get(Fields.KEY, settings.get("cloud.azure." + Fields.KEY_DEPRECATED));
+        // We try to load storage API settings from `cloud.azure.`
+        account = settings.get(ACCOUNT, settings.get(ACCOUNT_DEPRECATED));
+        key = settings.get(KEY, settings.get(KEY_DEPRECATED));
         blob = "http://" + account + ".blob.core.windows.net/";
 
         try {
