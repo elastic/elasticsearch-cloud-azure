@@ -24,6 +24,7 @@ import org.elasticsearch.cloud.azure.management.AzureComputeService;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
 import org.elasticsearch.cluster.node.DiscoveryNodeService;
+import org.elasticsearch.cluster.settings.ClusterDynamicSettings;
 import org.elasticsearch.cluster.settings.DynamicSettings;
 import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.inject.Inject;
@@ -50,7 +51,7 @@ public class AzureDiscovery extends ZenDiscovery {
     public AzureDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
                           ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
                           DiscoveryNodeService discoveryNodeService, AzureComputeService azureService, NetworkService networkService,
-                          DiscoverySettings discoverySettings, ElectMasterService electMasterService, DynamicSettings dynamicSettings,
+                          DiscoverySettings discoverySettings, ElectMasterService electMasterService, @ClusterDynamicSettings DynamicSettings dynamicSettings,
                           Version version) {
         super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
                 discoveryNodeService, pingService, electMasterService, discoverySettings, dynamicSettings);
