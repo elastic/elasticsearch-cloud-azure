@@ -42,7 +42,7 @@ governing permissions and limitations under the License. -->
     </parent>
 
     <properties>
-        <elasticsearch.version>1.4.5-SNAPSHOT</elasticsearch.version>
+        <elasticsearch.version>1.4.5</elasticsearch.version>
         <lucene.version>4.10.4</lucene.version>
         <tests.output>onerror</tests.output>
         <tests.shuffle>true</tests.shuffle>
