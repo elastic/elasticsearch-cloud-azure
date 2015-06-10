@@ -6,7 +6,7 @@ The Azure Cloud plugin allows to use Azure API for the unicast discovery mechani
 In order to install the plugin, run: 
 
 ```sh
-bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.6.1
+bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.7.0
 ```
 
 You need to install a version matching your Elasticsearch version:
@@ -328,7 +328,7 @@ This command should give you a JSON result:
 sudo service elasticsearch stop
 
 # Install the plugin
-sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.6.1
+sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.7.0
 
 # Configure it
 sudo vi /etc/elasticsearch/elasticsearch.yml
