@@ -58,6 +58,7 @@ public class AzureRepository extends BlobStoreRepository {
     public final static String CONTAINER_DEFAULT = "elasticsearch-snapshots";
 
     static public final class Repository {
+        public static final String USE_SECONDARY = "use_secondary";
         public static final String CONTAINER = "container";
         public static final String CHUNK_SIZE = "chunk_size";
         public static final String COMPRESS = "compress";
@@ -71,6 +72,8 @@ public class AzureRepository extends BlobStoreRepository {
     private ByteSizeValue chunkSize;
 
     private boolean compress;
+
+    private boolean useSecondary;
 
     @Inject
     public AzureRepository(RepositoryName name, RepositorySettings repositorySettings,
@@ -92,6 +95,8 @@ public class AzureRepository extends BlobStoreRepository {
 
         this.compress = repositorySettings.settings().getAsBoolean(Repository.COMPRESS,
                 settings.getAsBoolean(Storage.COMPRESS, false));
+        this.useSecondary = repositorySettings.settings().getAsBoolean(Repository.USE_SECONDARY, false);
+
         String basePath = repositorySettings.settings().get(Repository.BASE_PATH, null);
 
         if (Strings.hasLength(basePath)) {
@@ -141,9 +146,9 @@ public class AzureRepository extends BlobStoreRepository {
     @Override
     public void initializeSnapshot(SnapshotId snapshotId, ImmutableList<String> indices, MetaData metaData) {
         try {
-            if (!blobStore.client().doesContainerExist(blobStore.container())) {
+            if (!blobStore.doesContainerExist(blobStore.container())) {
                 logger.debug("container [{}] does not exist. Creating...", blobStore.container());
-                blobStore.client().createContainer(blobStore.container());
+                blobStore.createContainer(blobStore.container());
             }
             super.initializeSnapshot(snapshotId, indices, metaData);
         } catch (StorageException e) {
@@ -158,9 +163,13 @@ public class AzureRepository extends BlobStoreRepository {
     @Override
     public String startVerification() {
         try {
-            if (!blobStore.client().doesContainerExist(blobStore.container())) {
+            if (!blobStore.doesContainerExist(blobStore.container())) {
                 logger.debug("container [{}] does not exist. Creating...", blobStore.container());
-                blobStore.client().createContainer(blobStore.container());
+                blobStore.createContainer(blobStore.container());
+            }
+            if (this.useSecondary) {
+                // secondary end point is readonly; can't do any more verification at this level
+                return null;
             }
             return super.startVerification();
         } catch (StorageException e) {

@@ -422,7 +422,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         assertThat(awaitBusy(new Predicate<Object>() {
             public boolean apply(Object obj) {
                 try {
-                    storageService.createContainer(container);
+                    storageService.createContainer(container, false);
                     logger.debug(" -> container created...");
                     return true;
                 } catch (URISyntaxException e) {
@@ -435,7 +435,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
                 }
             }
         }, 30, TimeUnit.SECONDS), equalTo(true));
-        storageService.removeContainer(container);
+        storageService.removeContainer(container, false);
 
         ClusterAdminClient client = client().admin().cluster();
         logger.info("-->  creating azure repository while container is being removed");
@@ -477,7 +477,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
 
         AzureStorageService client = new AzureStorageServiceImpl(settings, settingsFilter);
         for (String container : containers) {
-            client.removeContainer(container);
+            client.removeContainer(container, false);
         }
     }
 }

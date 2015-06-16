@@ -41,27 +41,30 @@ public interface AzureStorageService {
         public static final String API_IMPLEMENTATION = "cloud.azure.storage.api.impl";
         public static final String ACCOUNT = "cloud.azure.storage.account";
         public static final String KEY = "cloud.azure.storage.key";
+        public static final String ACCOUNT2 = "cloud.azure.storage.account2";
+        public static final String KEY2 = "cloud.azure.storage.key2";
+        public static final String USE_SECONDARY = "repositories.azure.use_secondary";
         public static final String CONTAINER = "repositories.azure.container";
         public static final String BASE_PATH = "repositories.azure.base_path";
         public static final String CHUNK_SIZE = "repositories.azure.chunk_size";
         public static final String COMPRESS = "repositories.azure.compress";
     }
 
-    boolean doesContainerExist(String container);
+    boolean doesContainerExist(String container, boolean useSecondary);
 
-    void removeContainer(String container) throws URISyntaxException, StorageException;
+    void removeContainer(String container, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    void createContainer(String container) throws URISyntaxException, StorageException;
+    void createContainer(String container, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    void deleteFiles(String container, String path) throws URISyntaxException, StorageException;
+    void deleteFiles(String container, String path, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    boolean blobExists(String container, String blob) throws URISyntaxException, StorageException;
+    boolean blobExists(String container, String blob, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    void deleteBlob(String container, String blob) throws URISyntaxException, StorageException;
+    void deleteBlob(String container, String blob, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    InputStream getInputStream(String container, String blob) throws URISyntaxException, StorageException;
+    InputStream getInputStream(String container, String blob, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    OutputStream getOutputStream(String container, String blob) throws URISyntaxException, StorageException;
+    OutputStream getOutputStream(String container, String blob, boolean useSecondary) throws URISyntaxException, StorageException;
 
-    ImmutableMap<String,BlobMetaData> listBlobsByPrefix(String container, String keyPath, String prefix) throws URISyntaxException, StorageException;
+    ImmutableMap<String,BlobMetaData> listBlobsByPrefix(String container, String keyPath, String prefix, boolean useSecondary) throws URISyntaxException, StorageException;
 }
