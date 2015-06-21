@@ -21,6 +21,7 @@ package org.elasticsearch.repositories.azure;
 
 
 import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.LocationMode;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryResponse;
 import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotResponse;
 import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotResponse;
@@ -422,7 +423,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         assertThat(awaitBusy(new Predicate<Object>() {
             public boolean apply(Object obj) {
                 try {
-                    storageService.createContainer(container, false);
+                    storageService.createContainer("mock_azure_account", LocationMode.PRIMARY_ONLY, container);
                     logger.debug(" -> container created...");
                     return true;
                 } catch (URISyntaxException e) {
@@ -435,7 +436,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
                 }
             }
         }, 30, TimeUnit.SECONDS), equalTo(true));
-        storageService.removeContainer(container, false);
+        storageService.removeContainer("mock_azure_account", LocationMode.PRIMARY_ONLY, container);
 
         ClusterAdminClient client = client().admin().cluster();
         logger.info("-->  creating azure repository while container is being removed");
@@ -477,7 +478,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
 
         AzureStorageService client = new AzureStorageServiceImpl(settings, settingsFilter);
         for (String container : containers) {
-            client.removeContainer(container, false);
+            client.removeContainer("mock_azure_account", LocationMode.PRIMARY_ONLY, container);
         }
     }
 }

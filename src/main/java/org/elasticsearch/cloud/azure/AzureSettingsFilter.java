@@ -47,8 +47,6 @@ public class AzureSettingsFilter implements SettingsFilter.Filter {
         // Cloud storage API settings needed to be hidden
         settings.remove(ACCOUNT);
         settings.remove(KEY);
-        settings.remove(ACCOUNT2);
-        settings.remove(KEY2);
 
         // Deprecated Cloud storage API settings needed to be hidden
         // TODO Remove in 3.0.0

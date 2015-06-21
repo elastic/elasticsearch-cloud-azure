@@ -20,6 +20,7 @@
 package org.elasticsearch.repositories.azure;
 
 import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.LocationMode;
 import org.elasticsearch.cloud.azure.blobstore.AzureBlobStore;
 import org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage;
 import org.elasticsearch.cluster.metadata.MetaData;
@@ -58,7 +59,8 @@ public class AzureRepository extends BlobStoreRepository {
     public final static String CONTAINER_DEFAULT = "elasticsearch-snapshots";
 
     static public final class Repository {
-        public static final String USE_SECONDARY = "use_secondary";
+        public static final String ACCOUNT = "account";
+        public static final String LOCATION_MODE = "location_mode";
         public static final String CONTAINER = "container";
         public static final String CHUNK_SIZE = "chunk_size";
         public static final String COMPRESS = "compress";
@@ -73,7 +75,8 @@ public class AzureRepository extends BlobStoreRepository {
 
     private boolean compress;
 
-    private boolean useSecondary;
+    private String accountName;
+    private LocationMode locMode;
 
     @Inject
     public AzureRepository(RepositoryName name, RepositorySettings repositorySettings,
@@ -95,7 +98,14 @@ public class AzureRepository extends BlobStoreRepository {
 
         this.compress = repositorySettings.settings().getAsBoolean(Repository.COMPRESS,
                 settings.getAsBoolean(Storage.COMPRESS, false));
-        this.useSecondary = repositorySettings.settings().getAsBoolean(Repository.USE_SECONDARY, false);
+        this.accountName = repositorySettings.settings().get(Repository.ACCOUNT, null);
+        String modeStr = repositorySettings.settings().get(Repository.LOCATION_MODE, null);
+        if (modeStr == null) {
+            this.locMode = LocationMode.PRIMARY_ONLY;
+        }
+        else {
+            this.locMode = LocationMode.valueOf(modeStr.toUpperCase());
+        }
 
         String basePath = repositorySettings.settings().get(Repository.BASE_PATH, null);
 
@@ -167,7 +177,7 @@ public class AzureRepository extends BlobStoreRepository {
                 logger.debug("container [{}] does not exist. Creating...", blobStore.container());
                 blobStore.createContainer(blobStore.container());
             }
-            if (this.useSecondary) {
+            if (this.locMode == LocationMode.SECONDARY_ONLY) {
                 // secondary end point is readonly; can't do any more verification at this level
                 return null;
             }
