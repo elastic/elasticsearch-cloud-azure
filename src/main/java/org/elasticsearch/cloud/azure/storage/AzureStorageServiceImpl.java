@@ -91,6 +91,11 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
     }
     
     private CloudBlobClient getSelectedClient(String account, LocationMode mode) {
+        if (account == null) {
+            // for backwards compatibility, not specifying an account means to use the first one in the list
+            account = this.accounts[0];
+        }
+        
         CloudBlobClient client = this.clients.get(account);
 
         if (client == null) {

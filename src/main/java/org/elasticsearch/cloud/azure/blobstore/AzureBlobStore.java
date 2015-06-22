@@ -62,7 +62,10 @@ public class AzureBlobStore extends AbstractComponent implements BlobStore {
         this.client = client;
         this.container = repositorySettings.settings().get("container", settings.get(CONTAINER, CONTAINER_DEFAULT));
         this.repositoryName = name.getName();
+
         this.accountName = repositorySettings.settings().get(Repository.ACCOUNT, null);
+        // NOTE: null account means to use the first one specified in config
+        
         String modeStr = repositorySettings.settings().get(Repository.LOCATION_MODE, null);
         if (modeStr == null) {
             this.locMode = LocationMode.PRIMARY_ONLY;
