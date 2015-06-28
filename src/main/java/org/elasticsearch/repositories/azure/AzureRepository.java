@@ -177,7 +177,7 @@ public class AzureRepository extends BlobStoreRepository {
                 logger.debug("container [{}] does not exist. Creating...", blobStore.container());
                 blobStore.createContainer(blobStore.container());
             }
-            if (this.locMode == LocationMode.SECONDARY_ONLY) {
+            if (this.locMode == LocationMode.SECONDARY_ONLY || this.locMode == LocationMode.SECONDARY_THEN_PRIMARY) {
                 // secondary end point is readonly; can't do any more verification at this level
                 return null;
             }
