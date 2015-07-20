@@ -29,7 +29,6 @@ import org.elasticsearch.client.ClusterAdminClient;
 import org.elasticsearch.cloud.azure.AbstractAzureTest;
 import org.elasticsearch.cloud.azure.AzureSettingsFilter;
 import org.elasticsearch.cloud.azure.storage.AzureStorageService;
-import org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage;
 import org.elasticsearch.cloud.azure.storage.AzureStorageServiceImpl;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.common.Strings;
@@ -111,9 +110,9 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         logger.info("-->  creating azure repository with path [{}]", getRepositoryPath());
         PutRepositoryResponse putRepositoryResponse = client.admin().cluster().preparePutRepository("test-repo")
                 .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
-                        .put(Storage.CONTAINER, getContainerName())
-                        .put(Storage.BASE_PATH, getRepositoryPath())
-                        .put(Storage.CHUNK_SIZE, randomIntBetween(1000, 10000))
+                        .put(Repository.CONTAINER, getContainerName())
+                        .put(Repository.BASE_PATH, getRepositoryPath())
+                                .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
                 ).get();
         assertThat(putRepositoryResponse.isAcknowledged(), equalTo(true));
 
