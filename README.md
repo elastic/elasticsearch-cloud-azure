@@ -3,7 +3,7 @@ Azure Cloud Plugin for Elasticsearch
 
 The Azure Cloud plugin allows to use Azure API for the unicast discovery mechanism.
 
-In order to install the plugin, run: 
+In order to install the plugin, run:
 
 ```sh
 bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.8.0
@@ -14,7 +14,7 @@ You need to install a version matching your Elasticsearch version:
 |       Elasticsearch    | Azure Cloud Plugin|                                                             Docs                                                                   |
 |------------------------|-------------------|------------------------------------------------------------------------------------------------------------------------------------|
 |    master              | Build from source | See below                                                                                                                          |
-|    es-1.x              |     2.8.0         | [2.8.0](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.8.0/#version-280-for-elasticsearch-17)                  |
+|    es-1.7              |     2.8.0         | [2.8.0](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.8.0/#version-280-for-elasticsearch-17)                  |
 | es-1.6        |  2.7.0                | [2.7.0](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.7.0/#version-270-for-elasticsearch-16)  |
 |    es-1.5              |     2.6.1         | [2.6.1](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.6.1/#version-261-for-elasticsearch-15)                  |
 |    es-1.4              |     2.5.2         | [2.5.2](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.5.2/#version-252-for-elasticsearch-14)                  |
@@ -28,7 +28,7 @@ To build a `SNAPSHOT` version, you need to build it with Maven:
 
 ```bash
 mvn clean install
-plugin --install cloud-azure \ 
+plugin --install cloud-azure \
        --url file:target/releases/elasticsearch-cloud-azure-X.X.X-SNAPSHOT.zip
 ```
 
@@ -161,7 +161,7 @@ cat azure-cert.pem azure-pk.pem > azure.pem.txt
 openssl pkcs12 -export -in azure.pem.txt -out azurekeystore.pkcs12 -name azure -noiter -nomaciter
 ```
 
-Upload the `azure-certificate.cer` file both in the elasticsearch Cloud Service (under `Manage Certificates`), 
+Upload the `azure-certificate.cer` file both in the elasticsearch Cloud Service (under `Manage Certificates`),
 and under `Settings -> Manage Certificates`.
 
 **Important**: when prompted for a password, you need to enter a non empty one.
@@ -261,7 +261,7 @@ Now, your first instance is started. You need to install Elasticsearch on it.
 >```
 >
 > But you can also define it once in `~/.ssh/config` file:
-> 
+>
 >```
 >Host *.cloudapp.net
 >  User elasticsearch
@@ -486,11 +486,11 @@ client.admin().cluster().preparePutRepository("my_backup3")
 Repository validation rules
 ---------------------------
 
-According to the [containers naming guide](http://msdn.microsoft.com/en-us/library/dd135715.aspx), a container name must 
+According to the [containers naming guide](http://msdn.microsoft.com/en-us/library/dd135715.aspx), a container name must
 be a valid DNS name, conforming to the following naming rules:
 
 * Container names must start with a letter or number, and can contain only letters, numbers, and the dash (-) character.
-* Every dash (-) character must be immediately preceded and followed by a letter or number; consecutive dashes are not 
+* Every dash (-) character must be immediately preceded and followed by a letter or number; consecutive dashes are not
 permitted in container names.
 * All letters in a container name must be lowercase.
 * Container names must be from 3 through 63 characters long.
