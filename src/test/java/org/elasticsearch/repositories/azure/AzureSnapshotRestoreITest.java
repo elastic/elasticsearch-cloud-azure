@@ -36,6 +36,7 @@ import org.elasticsearch.common.base.Predicate;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsFilter;
+import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.repositories.RepositoryMissingException;
 import org.elasticsearch.repositories.RepositoryVerificationException;
 import org.elasticsearch.repositories.azure.AzureRepository.Repository;
@@ -48,6 +49,7 @@ import org.junit.*;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
+import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
@@ -109,7 +111,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         Client client = client();
         logger.info("-->  creating azure repository with path [{}]", getRepositoryPath());
         PutRepositoryResponse putRepositoryResponse = client.admin().cluster().preparePutRepository("test-repo")
-                .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
+                .setType("azure").setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName())
                         .put(Repository.BASE_PATH, getRepositoryPath())
                                 .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
@@ -201,7 +203,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
 
         logger.info("creating Azure repository with path [{}]", getRepositoryPath());
         PutRepositoryResponse putRepositoryResponse = client.admin().cluster().preparePutRepository(repositoryName)
-                .setType("azure").setSettings(Settings.settingsBuilder()
+                .setType("azure").setSettings(settingsBuilder()
                                 .put(Repository.CONTAINER, getContainerName())
                                 .put(Repository.BASE_PATH, getRepositoryPath())
                                 .put(Repository.BASE_PATH, randomIntBetween(1000, 10000), ByteSizeUnit.BYTES)
@@ -242,14 +244,14 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         Client client = client();
         logger.info("-->  creating azure repository with path [{}]", getRepositoryPath());
         PutRepositoryResponse putRepositoryResponse1 = client.admin().cluster().preparePutRepository("test-repo1")
-                .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
+                .setType("azure").setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName().concat("-1"))
                         .put(Repository.BASE_PATH, getRepositoryPath())
                         .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
                 ).get();
         assertThat(putRepositoryResponse1.isAcknowledged(), equalTo(true));
         PutRepositoryResponse putRepositoryResponse2 = client.admin().cluster().preparePutRepository("test-repo2")
-                .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
+                .setType("azure").setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName().concat("-2"))
                         .put(Repository.BASE_PATH, getRepositoryPath())
                         .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
@@ -322,7 +324,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         ClusterAdminClient client = client().admin().cluster();
         logger.info("-->  creating azure repository without any path");
         PutRepositoryResponse putRepositoryResponse = client.preparePutRepository("test-repo").setType("azure")
-                .setSettings(ImmutableSettings.settingsBuilder()
+                .setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName())
                 ).get();
         assertThat(putRepositoryResponse.isAcknowledged(), equalTo(true));
@@ -343,7 +345,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
 
         logger.info("-->  creating azure repository path [{}]", getRepositoryPath());
         putRepositoryResponse = client.preparePutRepository("test-repo").setType("azure")
-                .setSettings(ImmutableSettings.settingsBuilder()
+                .setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName())
                         .put(Repository.BASE_PATH, getRepositoryPath())
         ).get();
@@ -370,7 +372,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         ClusterAdminClient client = client().admin().cluster();
         logger.info("-->  creating azure repository without any path");
         PutRepositoryResponse putRepositoryResponse = client.preparePutRepository("test-repo").setType("azure")
-                .setSettings(ImmutableSettings.settingsBuilder()
+                .setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName())
                 ).get();
         assertThat(putRepositoryResponse.isAcknowledged(), equalTo(true));
@@ -420,7 +422,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
             public boolean apply(Object obj) {
                 try {
                     PutRepositoryResponse putRepositoryResponse = client().admin().cluster().preparePutRepository("test-repo")
-                            .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
+                            .setType("azure").setSettings(settingsBuilder()
                                     .put(Repository.CONTAINER, container)
                                     .put(Repository.BASE_PATH, getRepositoryPath())
                                     .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
@@ -452,7 +454,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         Client client = client();
         logger.info("-->  creating azure repository with path [{}]", getRepositoryPath());
         PutRepositoryResponse putRepositoryResponse = client.admin().cluster().preparePutRepository("test-repo")
-                .setType("azure").setSettings(ImmutableSettings.settingsBuilder()
+                .setType("azure").setSettings(settingsBuilder()
                         .put(Repository.CONTAINER, getContainerName())
                         .put(Repository.BASE_PATH, getRepositoryPath())
                         .put(Repository.CHUNK_SIZE, randomIntBetween(1000, 10000))
@@ -500,7 +502,7 @@ public class AzureSnapshotRestoreITest extends AbstractAzureTest {
         logger.info("-->  creating azure repository while container is being removed");
         try {
             client.preparePutRepository("test-repo").setType("azure")
-                    .setSettings(ImmutableSettings.settingsBuilder()
+                    .setSettings(settingsBuilder()
                             .put(Repository.CONTAINER, container)
                     ).get();
             fail("we should get a RepositoryVerificationException");
