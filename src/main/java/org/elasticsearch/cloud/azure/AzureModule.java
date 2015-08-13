@@ -140,8 +140,8 @@ public class AzureModule extends AbstractModule {
             return false;
         }
 
-        if ((isPropertyMissing(settings, Storage.ACCOUNT) ||
-                isPropertyMissing(settings, Storage.KEY)) &&
+        if ((isArrayMissing(settings, Storage.ACCOUNT) ||
+                isArrayMissing(settings, Storage.KEY)) &&
                 (isPropertyMissing(settings, Storage.ACCOUNT_DEPRECATED) ||
                 isPropertyMissing(settings, Storage.KEY_DEPRECATED))) {
             logger.debug("azure repository is not set using [{}] and [{}] properties",
@@ -194,4 +194,10 @@ public class AzureModule extends AbstractModule {
         return false;
     }
 
+    public static boolean isArrayMissing(Settings settings, String name) throws ElasticsearchException {
+        if (settings.getAsArray(name) == null) {
+            return true;
+        }
+        return false;
+    }
 }

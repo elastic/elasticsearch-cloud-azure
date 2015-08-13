@@ -20,6 +20,7 @@
 package org.elasticsearch.cloud.azure.storage;
 
 import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.LocationMode;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.common.blobstore.BlobMetaData;
 import org.elasticsearch.common.blobstore.support.PlainBlobMetaData;
@@ -51,46 +52,46 @@ public class AzureStorageServiceMock extends AbstractLifecycleComponent<AzureSto
     }
 
     @Override
-    public boolean doesContainerExist(String container) {
+    public boolean doesContainerExist(String account, LocationMode mode, String container) {
         return true;
     }
 
     @Override
-    public void removeContainer(String container) {
+    public void removeContainer(String account, LocationMode mode, String container) {
     }
 
     @Override
-    public void createContainer(String container) {
+    public void createContainer(String account, LocationMode mode, String container) {
     }
 
     @Override
-    public void deleteFiles(String container, String path) {
+    public void deleteFiles(String account, LocationMode mode, String container, String path) {
     }
 
     @Override
-    public boolean blobExists(String container, String blob) {
+    public boolean blobExists(String account, LocationMode mode, String container, String blob) {
         return blobs.containsKey(blob);
     }
 
     @Override
-    public void deleteBlob(String container, String blob) {
+    public void deleteBlob(String account, LocationMode mode, String container, String blob) {
         blobs.remove(blob);
     }
 
     @Override
-    public InputStream getInputStream(String container, String blob) {
+    public InputStream getInputStream(String account, LocationMode mode, String container, String blob) {
         return new ByteArrayInputStream(blobs.get(blob).toByteArray());
     }
 
     @Override
-    public OutputStream getOutputStream(String container, String blob) throws URISyntaxException, StorageException {
+    public OutputStream getOutputStream(String account, LocationMode mode, String container, String blob) throws URISyntaxException, StorageException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         blobs.put(blob, outputStream);
         return outputStream;
     }
 
     @Override
-    public ImmutableMap<String, BlobMetaData> listBlobsByPrefix(String container, String keyPath, String prefix) {
+    public ImmutableMap<String, BlobMetaData> listBlobsByPrefix(String account, LocationMode mode, String container, String keyPath, String prefix) {
         ImmutableMap.Builder<String, BlobMetaData> blobsBuilder = ImmutableMap.builder();
         for (String blobName : blobs.keySet()) {
             if (startsWithIgnoreCase(blobName, prefix)) {
