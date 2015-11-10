@@ -59,14 +59,14 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
         // We try to load storage API settings from `cloud.azure.`
         account = settings.get(ACCOUNT, settings.get(ACCOUNT_DEPRECATED));
         key = settings.get(KEY, settings.get(KEY_DEPRECATED));
-        blob = "http://" + account + ".blob.core.windows.net/";
+        blob = "https://" + account + ".blob.core.windows.net/";
 
         try {
             if (account != null) {
                 logger.trace("creating new Azure storage client using account [{}], key [{}], blob [{}]", account, key, blob);
 
                 String storageConnectionString =
-                        "DefaultEndpointsProtocol=http;"
+                        "DefaultEndpointsProtocol=https;"
                                 + "AccountName="+ account +";"
                                 + "AccountKey=" + key;
 
