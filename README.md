@@ -12,7 +12,7 @@ The Azure Cloud plugin allows to use Azure API for the unicast discovery mechani
 In order to install the plugin, run:
 
 ```sh
-bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.7.1
+bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.8.2
 ```
 
 You need to install a version matching your Elasticsearch version:
@@ -20,7 +20,7 @@ You need to install a version matching your Elasticsearch version:
 |       Elasticsearch    | Azure Cloud Plugin|                                                             Docs                                                                   |
 |------------------------|-------------------|------------------------------------------------------------------------------------------------------------------------------------|
 |    master              | Build from source | See below                                                                                                                          |
-|    es-1.7              |     2.8.1         | [2.8.1](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.8.1/#version-281-for-elasticsearch-17)                  |
+|    es-1.7              |     2.8.2         | [2.8.2](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.8.2/#version-282-for-elasticsearch-17)                  |
 |    es-1.6              |     2.7.1         | [2.7.1](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.7.1/#version-271-for-elasticsearch-16)                  |
 |    es-1.5              |     2.6.1         | [2.6.1](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.6.1/#version-261-for-elasticsearch-15)                  |
 |    es-1.4              |     2.5.2         | [2.5.2](https://github.com/elastic/elasticsearch-cloud-azure/tree/v2.5.2/#version-252-for-elasticsearch-14)                  |
@@ -335,7 +335,7 @@ This command should give you a JSON result:
 sudo service elasticsearch stop
 
 # Install the plugin
-sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.7.1
+sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-azure/2.8.2
 
 # Configure it
 sudo vi /etc/elasticsearch/elasticsearch.yml
