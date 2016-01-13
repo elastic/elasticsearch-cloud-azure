@@ -30,6 +30,7 @@ import org.elasticsearch.common.collect.ImmutableMap;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.settings.SettingsFilter;
 import org.elasticsearch.repositories.RepositoryException;
 
@@ -49,6 +50,7 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
     private final String account;
     private final String key;
     private final String blob;
+    private final TimeValue timeout;
 
     private CloudBlobClient client;
 
@@ -59,6 +61,7 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
         // We try to load storage API settings from `cloud.azure.`
         account = settings.get(ACCOUNT, settings.get(ACCOUNT_DEPRECATED));
         key = settings.get(KEY, settings.get(KEY_DEPRECATED));
+        timeout = settings.getAsTime(Storage.TIMEOUT, TimeValue.timeValueMinutes(5));
         blob = "https://" + account + ".blob.core.windows.net/";
 
         try {
@@ -75,6 +78,15 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
 
                 // Create the blob client.
                 client = storageAccount.createCloudBlobClient();
+
+                // Set timeout option. Defaults to 5mn. See cloud.azure.storage.timeout or cloud.azure.storage.xxx.timeout
+                try {
+                    int timeoutAsInt = (int) timeout.getMillis();
+                    client.getDefaultRequestOptions().setTimeoutIntervalInMs(timeoutAsInt);
+                } catch (ClassCastException e) {
+                    throw new IllegalArgumentException("Can not convert [" + timeout +
+                            "]. It can not be longer than 2,147,483,647ms.");
+                }
             }
         } catch (Exception e) {
             // Can not start Azure Storage Client

@@ -421,6 +421,17 @@ cloud:
         storage_key: your_azure_storage_key
 ```
 
+You can set the timeout to use when making any single request. Defaults to `5m`.
+
+```yaml
+cloud:
+    azure:
+        storage:
+            account: your_azure_storage_account
+            key: your_azure_storage_key
+            timeout: 10s
+```
+
 The Azure repository supports following settings:
 
 * `container`: Container name. Defaults to `elasticsearch-snapshots`
