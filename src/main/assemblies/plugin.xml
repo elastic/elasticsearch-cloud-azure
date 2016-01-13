@@ -33,6 +33,7 @@ governing permissions and limitations under the License. -->
                 <include>com.microsoft.azure:azure-storage</include>
                 <include>com.microsoft.azure:azure-management</include>
                 <include>com.microsoft.azure:azure-management-compute</include>
+                <include>com.google.guava:guava</include>
             </includes>
         </dependencySet>
     </dependencySets>

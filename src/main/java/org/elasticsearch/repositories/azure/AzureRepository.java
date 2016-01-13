@@ -56,6 +56,9 @@ public class AzureRepository extends BlobStoreRepository {
 
     public final static String TYPE = "azure";
     public final static String CONTAINER_DEFAULT = "elasticsearch-snapshots";
+    public final static Boolean ENCRYPT_DEFAULT = false;
+    public final static String ENCRYPTION_KEY_DEFAULT = "I AM NOT A KEY";
+    public final static String ENCRYPTION_SALT_DEFAULT = "I AM NOT SALT";
 
     static public final class Repository {
         public static final String CONTAINER = "container";

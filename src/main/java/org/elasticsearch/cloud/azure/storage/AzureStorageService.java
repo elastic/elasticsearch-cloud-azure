@@ -20,6 +20,7 @@
 package org.elasticsearch.cloud.azure.storage;
 
 import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.core.StreamMd5AndLength;
 import org.elasticsearch.common.blobstore.BlobMetaData;
 import org.elasticsearch.common.collect.ImmutableMap;
 
@@ -41,6 +42,9 @@ public interface AzureStorageService {
         public static final String API_IMPLEMENTATION = "cloud.azure.storage.api.impl";
         public static final String ACCOUNT = "cloud.azure.storage.account";
         public static final String KEY = "cloud.azure.storage.key";
+        public static final String ENCRYPT = "cloud.azure.storage.encrypt";
+        public static final String ENCRYPTION_KEY = "cloud.azure.storage.encryption_secret";
+        public static final String ENCRYPTION_SALT = "cloud.azure.storage.encryption_salt";
         public static final String CONTAINER = "repositories.azure.container";
         public static final String BASE_PATH = "repositories.azure.base_path";
         public static final String CHUNK_SIZE = "repositories.azure.chunk_size";
