@@ -1,6 +1,11 @@
-**IMPORTANT**: this project now moved to [elasticsearch repository](https://github.com/elastic/elasticsearch/tree/master/plugins/cloud-azure).
+**IMPORTANT**: this project now moved to elasticsearch repository (from elasticsearch 2.0.0): 
 
-Only important bug fixes will be merged here. If you have a question about the plugin, please use [discuss.elastic.co](https://discuss.elastic.co/c/elasticsearch). If you want to report a bug, please use [elasticsearch repository](https://github.com/elastic/elasticsearch/issues/new).
+* [cloud-azure](https://github.com/elastic/elasticsearch/tree/2.x/plugins/cloud-azure) ([documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/2.x/cloud-azure.html))
+
+In elasticsearch master branch, the code has been split:
+
+* [repository-azure](https://github.com/elastic/elasticsearch/tree/master/plugins/repository-azure) ([documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/master/repository-azure.html))
+* [discovery-azure](https://github.com/elastic/elasticsearch/tree/master/plugins/discovery-azure) ([documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/master/discovery-azure.html))
 
 ---
 
