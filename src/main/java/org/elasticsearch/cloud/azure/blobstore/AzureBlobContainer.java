@@ -46,8 +46,9 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     protected final String keyPath;
     protected final String repositoryName;
+    protected final AzureEncrypt encrypter;
 
-    public AzureBlobContainer(String repositoryName, BlobPath path, AzureBlobStore blobStore) {
+    public AzureBlobContainer(String repositoryName, BlobPath path, AzureBlobStore blobStore, AzureEncrypt encrypter) {
         super(path);
         this.blobStore = blobStore;
         String keyPath = path.buildAsString("/");
@@ -56,6 +57,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
         }
         this.keyPath = keyPath;
         this.repositoryName = repositoryName;
+        this.encrypter = encrypter;
     }
 
     @Override
@@ -71,7 +73,11 @@ public class AzureBlobContainer extends AbstractBlobContainer {
     @Override
     public InputStream openInput(String blobName) throws IOException {
         try {
-            return blobStore.client().getInputStream(blobStore.container(), buildKey(blobName));
+            InputStream inputStream = blobStore.client().getInputStream(blobStore.container(), buildKey(blobName));
+            if(blobStore.isEncrypted()) {
+                inputStream = encrypter.input(inputStream);
+            }
+            return inputStream;
         } catch (StorageException e) {
             if (e.getHttpStatusCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                 throw new FileNotFoundException(e.getMessage());
@@ -85,7 +91,11 @@ public class AzureBlobContainer extends AbstractBlobContainer {
     @Override
     public OutputStream createOutput(String blobName) throws IOException {
         try {
-            return new AzureOutputStream(blobStore.client().getOutputStream(blobStore.container(), buildKey(blobName)));
+            OutputStream outputStream = new AzureOutputStream(blobStore.client().getOutputStream(blobStore.container(), buildKey(blobName)));
+            if(blobStore.isEncrypted()) {
+                outputStream = encrypter.output(outputStream);
+            }
+            return outputStream;
         } catch (StorageException e) {
             if (e.getHttpStatusCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                 throw new FileNotFoundException(e.getMessage());
