@@ -81,19 +81,22 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
 
                 // Set timeout option. See cloud.azure.storage.timeout or cloud.azure.storage.xxx.timeout
                 if (timeout.getSeconds() > 0) {
-                    try {
-                        int timeoutAsInt = (int) timeout.getMillis();
-                        client.getDefaultRequestOptions().setTimeoutIntervalInMs(timeoutAsInt);
-                    } catch (ClassCastException e) {
-                        throw new IllegalArgumentException("Can not convert [" + timeout +
-                                "]. It can not be longer than 2,147,483,647ms.");
-                    }
+                    client.getDefaultRequestOptions().setTimeoutIntervalInMs(safeTimeInMsToInt(timeout));
                 }
             }
         } catch (Exception e) {
             // Can not start Azure Storage Client
             logger.error("can not start azure storage client: {}", e.getMessage());
         }
+    }
+
+    // Needed for Java < Java 8
+    public static int safeTimeInMsToInt(TimeValue timeout) {
+        if (timeout.getMillis() < Integer.MIN_VALUE || timeout.getMillis() > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Can not convert [" + timeout +
+                    "]. It can not be longer than 2,147,483,647ms.");
+        }
+        return (int) timeout.getMillis();
     }
 
     @Override
