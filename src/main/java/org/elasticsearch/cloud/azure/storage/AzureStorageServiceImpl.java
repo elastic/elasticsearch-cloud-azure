@@ -61,7 +61,7 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
         // We try to load storage API settings from `cloud.azure.`
         account = settings.get(ACCOUNT, settings.get(ACCOUNT_DEPRECATED));
         key = settings.get(KEY, settings.get(KEY_DEPRECATED));
-        timeout = settings.getAsTime(Storage.TIMEOUT, TimeValue.timeValueMinutes(5));
+        timeout = settings.getAsTime(Storage.TIMEOUT, TimeValue.timeValueMinutes(-1));
         blob = "https://" + account + ".blob.core.windows.net/";
 
         try {
@@ -79,13 +79,15 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
                 // Create the blob client.
                 client = storageAccount.createCloudBlobClient();
 
-                // Set timeout option. Defaults to 5mn. See cloud.azure.storage.timeout or cloud.azure.storage.xxx.timeout
-                try {
-                    int timeoutAsInt = (int) timeout.getMillis();
-                    client.getDefaultRequestOptions().setMaximumExecutionTimeInMs(timeoutAsInt);
-                } catch (ClassCastException e) {
-                    throw new IllegalArgumentException("Can not convert [" + timeout +
-                            "]. It can not be longer than 2,147,483,647ms.");
+                // Set timeout option. See cloud.azure.storage.timeout or cloud.azure.storage.xxx.timeout
+                if (timeout.getSeconds() > 0) {
+                    try {
+                        int timeoutAsInt = (int) timeout.getMillis();
+                        client.getDefaultRequestOptions().setTimeoutIntervalInMs(timeoutAsInt);
+                    } catch (ClassCastException e) {
+                        throw new IllegalArgumentException("Can not convert [" + timeout +
+                                "]. It can not be longer than 2,147,483,647ms.");
+                    }
                 }
             }
         } catch (Exception e) {

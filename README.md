@@ -421,7 +421,9 @@ cloud:
         storage_key: your_azure_storage_key
 ```
 
-You can set the timeout to use when making any single request. Defaults to `5m`.
+You can set the client side timeout to use when making any single request. It's not set by default which means that elasticsearch is using the
+[http://azure.github.io/azure-storage-java/com/microsoft/azure/storage/RequestOptions.html#setTimeoutIntervalInMs(java.lang.Integer)](default value)
+set by the azure client (known as 5 minutes).
 
 ```yaml
 cloud:
