@@ -60,6 +60,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public boolean blobExists(String blobName) {
+        logger.trace("blobExists({})", blobName);
         try {
             return blobStore.client().blobExists(blobStore.container(), buildKey(blobName));
         } catch (URISyntaxException | StorageException e) {
@@ -70,6 +71,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public InputStream openInput(String blobName) throws IOException {
+        logger.trace("openInput({})", blobName);
         try {
             return blobStore.client().getInputStream(blobStore.container(), buildKey(blobName));
         } catch (StorageException e) {
@@ -84,6 +86,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public OutputStream createOutput(String blobName) throws IOException {
+        logger.trace("createOutput({})", blobName);
         try {
             return new AzureOutputStream(blobStore.client().getOutputStream(blobStore.container(), buildKey(blobName)));
         } catch (StorageException e) {
@@ -100,6 +103,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public boolean deleteBlob(String blobName) throws IOException {
+        logger.trace("deleteBlob({})", blobName);
         try {
             blobStore.client().deleteBlob(blobStore.container(), buildKey(blobName));
             return true;
@@ -111,6 +115,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public ImmutableMap<String, BlobMetaData> listBlobsByPrefix(@Nullable String prefix) throws IOException {
+        logger.trace("listBlobsByPrefix({})", prefix);
 
         try {
             return blobStore.client().listBlobsByPrefix(blobStore.container(), keyPath, prefix);
@@ -122,6 +127,7 @@ public class AzureBlobContainer extends AbstractBlobContainer {
 
     @Override
     public ImmutableMap<String, BlobMetaData> listBlobs() throws IOException {
+        logger.trace("listBlobs()");
         return listBlobsByPrefix(null);
     }
 

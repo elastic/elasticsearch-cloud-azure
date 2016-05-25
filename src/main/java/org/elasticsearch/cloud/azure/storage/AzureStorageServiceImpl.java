@@ -30,8 +30,8 @@ import org.elasticsearch.common.collect.ImmutableMap;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.settings.SettingsFilter;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.repositories.RepositoryException;
 
 import java.io.InputStream;
@@ -39,7 +39,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.*;
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.ACCOUNT;
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.ACCOUNT_DEPRECATED;
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.KEY;
+import static org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage.KEY_DEPRECATED;
 
 /**
  *
@@ -102,8 +105,8 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
     @Override
     public boolean doesContainerExist(String container) {
         try {
-            CloudBlobContainer blob_container = client.getContainerReference(container);
-            return blob_container.exists();
+            CloudBlobContainer blobContainer = client.getContainerReference(container);
+            return blobContainer.exists();
         } catch (Exception e) {
             logger.error("can not access container [{}]", container);
         }
@@ -112,24 +115,24 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
 
     @Override
     public void removeContainer(String container) throws URISyntaxException, StorageException {
-        CloudBlobContainer blob_container = client.getContainerReference(container);
+        CloudBlobContainer blobContainer = client.getContainerReference(container);
         // TODO Should we set some timeout and retry options?
         /*
         BlobRequestOptions options = new BlobRequestOptions();
         options.setTimeoutIntervalInMs(1000);
         options.setRetryPolicyFactory(new RetryNoRetry());
-        blob_container.deleteIfExists(options, null);
+        blobContainer.deleteIfExists(options, null);
         */
         logger.trace("removing container [{}]", container);
-        blob_container.deleteIfExists();
+        blobContainer.deleteIfExists();
     }
 
     @Override
     public void createContainer(String container) throws URISyntaxException, StorageException {
         try {
-            CloudBlobContainer blob_container = client.getContainerReference(container);
+            CloudBlobContainer blobContainer = client.getContainerReference(container);
             logger.trace("creating container [{}]", container);
-            blob_container.createIfNotExists();
+            blobContainer.createIfNotExists();
         } catch (IllegalArgumentException e) {
             logger.trace("fails creating container [{}]", container, e.getMessage());
             throw new RepositoryException(container, e.getMessage());
@@ -141,21 +144,43 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
         logger.trace("delete files container [{}], path [{}]", container, path);
 
         // Container name must be lower case.
-        CloudBlobContainer blob_container = client.getContainerReference(container);
-        if (blob_container.exists()) {
-            for (ListBlobItem blobItem : blob_container.listBlobs(path)) {
-                logger.trace("removing blob [{}]", blobItem.getUri());
-                deleteBlob(container, blobItem.getUri().toString());
+        CloudBlobContainer blobContainer = client.getContainerReference(container);
+        if (blobContainer.exists()) {
+            // We list the blobs using a flat blob listing mode
+            for (ListBlobItem blobItem : blobContainer.listBlobs(path, true)) {
+                String blobName = blobNameFromUri(blobItem.getUri());
+                logger.trace("removing blob [{}] full URI was [{}]", blobName, blobItem.getUri());
+                deleteBlob(container, blobName);
             }
         }
+    }
+
+    /**
+     * Extract the blob name from a URI like https://myservice.azure.net/container/path/to/myfile
+     * It should remove the container part (first part of the path) and gives path/to/myfile
+     * @param uri URI to parse
+     * @return The blob name relative to the container
+     */
+    public static String blobNameFromUri(URI uri) {
+        String path = uri.getPath();
+
+        // We remove the container name from the path
+        // The 3 magic number cames from the fact if path is /container/path/to/myfile
+        // First occurrence is empty "/"
+        // Second occurrence is "container
+        // Last part contains "path/to/myfile" which is what we want to get
+        String[] splits = path.split("/", 3);
+
+        // We return the remaining end of the string
+        return splits[2];
     }
 
     @Override
     public boolean blobExists(String container, String blob) throws URISyntaxException, StorageException {
         // Container name must be lower case.
-        CloudBlobContainer blob_container = client.getContainerReference(container);
-        if (blob_container.exists()) {
-            CloudBlockBlob azureBlob = blob_container.getBlockBlobReference(blob);
+        CloudBlobContainer blobContainer = client.getContainerReference(container);
+        if (blobContainer.exists()) {
+            CloudBlockBlob azureBlob = blobContainer.getBlockBlobReference(blob);
             return azureBlob.exists();
         }
 
@@ -167,10 +192,10 @@ public class AzureStorageServiceImpl extends AbstractLifecycleComponent<AzureSto
         logger.trace("delete blob for container [{}], blob [{}]", container, blob);
 
         // Container name must be lower case.
-        CloudBlobContainer blob_container = client.getContainerReference(container);
-        if (blob_container.exists()) {
+        CloudBlobContainer blobContainer = client.getContainerReference(container);
+        if (blobContainer.exists()) {
             logger.trace("container [{}]: blob [{}] found. removing.", container, blob);
-            CloudBlockBlob azureBlob = blob_container.getBlockBlobReference(blob);
+            CloudBlockBlob azureBlob = blobContainer.getBlockBlobReference(blob);
             azureBlob.delete();
         }
     }
