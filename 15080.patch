@@ -1,0 +1,169 @@
+Index: src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageService.java	(revision e3d8015487617c36e92b7f9262cea446beea476e)
++++ src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageService.java	(revision 2bbba3f48fa91b2d6d7fc0546c7d0f9eedc6cb66)
+@@ -38,8 +38,14 @@
+         public static final String API_IMPLEMENTATION = "cloud.azure.storage.api.impl";
+         public static final String PREFIX = "cloud.azure.storage.";
+         @Deprecated
+-        public static final String ACCOUNT = "cloud.azure.storage.account";
++        public static final String ACCOUNT_DEPRECATED = "cloud.azure.storage.account";
+         @Deprecated
++        public static final String KEY_DEPRECATED = "cloud.azure.storage.key";
++
++        public static final String TIMEOUT = "cloud.azure.storage.timeout";
++
++        public static final String ACCOUNT = "repositories.azure.account";
++        public static final String LOCATION_MODE = "repositories.azure.location_mode";
+         public static final String KEY = "cloud.azure.storage.key";
+         public static final String CONTAINER = "repositories.azure.container";
+         public static final String BASE_PATH = "repositories.azure.base_path";
+Index: src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceImpl.java	(revision e3d8015487617c36e92b7f9262cea446beea476e)
++++ src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceImpl.java	(revision 2bbba3f48fa91b2d6d7fc0546c7d0f9eedc6cb66)
+@@ -115,6 +115,14 @@
+         // NOTE: for now, just set the location mode in case it is different;
+         // only one mode per storage account can be active at a time
+         client.getDefaultRequestOptions().setLocationMode(mode);
++
++        // Set timeout option. Defaults to 5mn. See cloud.azure.storage.timeout or cloud.azure.storage.xxx.timeout
++        try {
++            int timeout = (int) azureStorageSettings.getTimeout().getMillis();
++            client.getDefaultRequestOptions().setTimeoutIntervalInMs(timeout);
++        } catch (ClassCastException e) {
++            throw new IllegalArgumentException("Can not cast [" + azureStorageSettings.getTimeout() + "] to int.");
++        }
+         return client;
+     }
+     
+Index: src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageSettings.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageSettings.java	(revision e3d8015487617c36e92b7f9262cea446beea476e)
++++ src/main/java/org/elasticsearch/cloud/azure/storage/AzureStorageSettings.java	(revision 2bbba3f48fa91b2d6d7fc0546c7d0f9eedc6cb66)
+@@ -24,6 +24,9 @@
+ import org.elasticsearch.common.logging.ESLogger;
+ import org.elasticsearch.common.logging.ESLoggerFactory;
+ import org.elasticsearch.common.settings.Settings;
++import org.elasticsearch.common.unit.ByteSizeValue;
++import org.elasticsearch.common.unit.TimeValue;
++import org.elasticsearch.repositories.RepositorySettings;
+ 
+ import java.util.HashMap;
+ import java.util.Map;
+@@ -34,11 +37,13 @@
+     private String name;
+     private String account;
+     private String key;
++    private TimeValue timeout;
+ 
+-    public AzureStorageSettings(String name, String account, String key) {
++    public AzureStorageSettings(String name, String account, String key, TimeValue timeout) {
+         this.name = name;
+         this.account = account;
+         this.key = key;
++        this.timeout = timeout;
+     }
+ 
+     public String getName() {
+@@ -53,12 +58,17 @@
+         return account;
+     }
+ 
++    public TimeValue getTimeout() {
++        return timeout;
++    }
++
+     @Override
+     public String toString() {
+         final StringBuffer sb = new StringBuffer("AzureStorageSettings{");
+         sb.append("name='").append(name).append('\'');
+         sb.append(", account='").append(account).append('\'');
+         sb.append(", key='").append(key).append('\'');
++        sb.append(", timeout=").append(timeout);
+         sb.append('}');
+         return sb.toString();
+     }
+@@ -73,12 +83,15 @@
+         Map<String, AzureStorageSettings> secondaryStorage = new HashMap<>();
+ 
+         // We check for deprecated settings
+-        String account = settings.get(Storage.ACCOUNT);
+-        String key = settings.get(Storage.KEY);
++        String account = settings.get(Storage.ACCOUNT_DEPRECATED);
++        String key = settings.get(Storage.KEY_DEPRECATED);
++
++        TimeValue globalTimeout = settings.getAsTime(Storage.TIMEOUT, TimeValue.timeValueMinutes(5));
++
+         if (account != null) {
+             logger.warn("[{}] and [{}] have been deprecated. Use now [{}xxx.account] and [{}xxx.key] where xxx is any name",
+-                    Storage.ACCOUNT, Storage.KEY, Storage.PREFIX, Storage.PREFIX);
+-            primaryStorage = new AzureStorageSettings(null, account, key);
++                    Storage.ACCOUNT_DEPRECATED, Storage.KEY_DEPRECATED, Storage.PREFIX, Storage.PREFIX);
++            primaryStorage = new AzureStorageSettings(null, account, key, globalTimeout);
+         } else {
+             Settings storageSettings = settings.getByPrefix(Storage.PREFIX);
+             if (storageSettings != null) {
+@@ -87,7 +100,8 @@
+                     if (storage.getValue() instanceof Map) {
+                         @SuppressWarnings("unchecked")
+                         Map<String, String> map = (Map) storage.getValue();
+-                        AzureStorageSettings current = new AzureStorageSettings(storage.getKey(), map.get("account"), map.get("key"));
++                        TimeValue timeout = TimeValue.parseTimeValue(map.get("timeout"), globalTimeout, Storage.PREFIX + storage.getKey() + ".timeout");
++                        AzureStorageSettings current = new AzureStorageSettings(storage.getKey(), map.get("account"), map.get("key"), timeout);
+                         String activeStr = map.get("default");
+                         boolean activeByDefault = activeStr == null ? false : Boolean.parseBoolean(activeStr);
+                         if (activeByDefault) {
+Index: src/test/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceTest.java	(revision e3d8015487617c36e92b7f9262cea446beea476e)
++++ src/test/java/org/elasticsearch/cloud/azure/storage/AzureStorageServiceTest.java	(revision 2bbba3f48fa91b2d6d7fc0546c7d0f9eedc6cb66)
+@@ -37,6 +37,7 @@
+             .put("cloud.azure.storage.azure2.key", "mykey2")
+             .put("cloud.azure.storage.azure3.account", "myaccount3")
+             .put("cloud.azure.storage.azure3.key", "mykey3")
++            .put("cloud.azure.storage.azure3.timeout", "30s")
+             .build();
+ 
+     public void testGetSelectedClientWithNoPrimaryAndSecondary() {
+@@ -89,6 +90,28 @@
+         assertThat(client.getEndpoint(), is(URI.create("https://azure1")));
+     }
+ 
++    public void testGetSelectedClientGlobalTimeout() {
++        Settings timeoutSettings = Settings.builder()
++                .put(settings)
++                .put("cloud.azure.storage.timeout", "10s")
++                .build();
++
++        AzureStorageServiceImpl azureStorageService = new AzureStorageServiceMock(timeoutSettings);
++        azureStorageService.doStart();
++        CloudBlobClient client1 = azureStorageService.getSelectedClient("azure1", LocationMode.PRIMARY_ONLY);
++        assertThat(client1.getDefaultRequestOptions().getTimeoutIntervalInMs(), is(10 * 1000));
++        CloudBlobClient client3 = azureStorageService.getSelectedClient("azure3", LocationMode.PRIMARY_ONLY);
++        assertThat(client3.getDefaultRequestOptions().getTimeoutIntervalInMs(), is(30 * 1000));
++    }
++
++    public void testGetSelectedClientDefaultTimeout() {
++        AzureStorageServiceImpl azureStorageService = new AzureStorageServiceMock(settings);
++        azureStorageService.doStart();
++        CloudBlobClient client1 = azureStorageService.getSelectedClient("azure1", LocationMode.PRIMARY_ONLY);
++        assertThat(client1.getDefaultRequestOptions().getTimeoutIntervalInMs(), is(5 * 60 * 1000));
++        CloudBlobClient client3 = azureStorageService.getSelectedClient("azure3", LocationMode.PRIMARY_ONLY);
++        assertThat(client3.getDefaultRequestOptions().getTimeoutIntervalInMs(), is(30 * 1000));
++    }
+ 
+     /**
+      * This internal class just overload createClient method which is called by AzureStorageServiceImpl.doStart()
