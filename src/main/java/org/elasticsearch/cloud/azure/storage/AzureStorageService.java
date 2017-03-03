@@ -19,14 +19,6 @@
 
 package org.elasticsearch.cloud.azure.storage;
 
-import com.microsoft.azure.storage.StorageException;
-import org.elasticsearch.common.blobstore.BlobMetaData;
-import org.elasticsearch.common.collect.ImmutableMap;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-
 /**
  * Azure Storage Service interface
  * @see AzureStorageServiceImpl for Azure REST API implementation
@@ -48,21 +40,8 @@ public interface AzureStorageService {
         public static final String COMPRESS = "repositories.azure.compress";
     }
 
-    boolean doesContainerExist(String container);
+    AzureClient client();
 
-    void removeContainer(String container) throws URISyntaxException, StorageException;
+    AzureClient client(String account, String key);
 
-    void createContainer(String container) throws URISyntaxException, StorageException;
-
-    void deleteFiles(String container, String path) throws URISyntaxException, StorageException;
-
-    boolean blobExists(String container, String blob) throws URISyntaxException, StorageException;
-
-    void deleteBlob(String container, String blob) throws URISyntaxException, StorageException;
-
-    InputStream getInputStream(String container, String blob) throws URISyntaxException, StorageException;
-
-    OutputStream getOutputStream(String container, String blob) throws URISyntaxException, StorageException;
-
-    ImmutableMap<String,BlobMetaData> listBlobsByPrefix(String container, String keyPath, String prefix) throws URISyntaxException, StorageException;
 }

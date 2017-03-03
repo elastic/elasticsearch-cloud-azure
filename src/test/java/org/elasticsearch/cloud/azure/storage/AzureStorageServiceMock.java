@@ -19,21 +19,12 @@
 
 package org.elasticsearch.cloud.azure.storage;
 
-import com.microsoft.azure.storage.StorageException;
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.common.blobstore.BlobMetaData;
-import org.elasticsearch.common.blobstore.support.PlainBlobMetaData;
-import org.elasticsearch.common.collect.ImmutableMap;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,57 +42,6 @@ public class AzureStorageServiceMock extends AbstractLifecycleComponent<AzureSto
     }
 
     @Override
-    public boolean doesContainerExist(String container) {
-        return true;
-    }
-
-    @Override
-    public void removeContainer(String container) {
-    }
-
-    @Override
-    public void createContainer(String container) {
-    }
-
-    @Override
-    public void deleteFiles(String container, String path) {
-    }
-
-    @Override
-    public boolean blobExists(String container, String blob) {
-        return blobs.containsKey(blob);
-    }
-
-    @Override
-    public void deleteBlob(String container, String blob) {
-        blobs.remove(blob);
-    }
-
-    @Override
-    public InputStream getInputStream(String container, String blob) {
-        return new ByteArrayInputStream(blobs.get(blob).toByteArray());
-    }
-
-    @Override
-    public OutputStream getOutputStream(String container, String blob) throws URISyntaxException, StorageException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        blobs.put(blob, outputStream);
-        return outputStream;
-    }
-
-    @Override
-    public ImmutableMap<String, BlobMetaData> listBlobsByPrefix(String container, String keyPath, String prefix) {
-        ImmutableMap.Builder<String, BlobMetaData> blobsBuilder = ImmutableMap.builder();
-        for (String blobName : blobs.keySet()) {
-            if (startsWithIgnoreCase(blobName, prefix)) {
-                blobsBuilder.put(blobName, new PlainBlobMetaData(blobName, blobs.get(blobName).size()));
-            }
-        }
-        ImmutableMap<String, BlobMetaData> map = blobsBuilder.build();
-        return map;
-    }
-
-    @Override
     protected void doStart() throws ElasticsearchException {
     }
 
@@ -113,26 +53,13 @@ public class AzureStorageServiceMock extends AbstractLifecycleComponent<AzureSto
     protected void doClose() throws ElasticsearchException {
     }
 
-    /**
-     * Test if the given String starts with the specified prefix,
-     * ignoring upper/lower case.
-     *
-     * @param str    the String to check
-     * @param prefix the prefix to look for
-     * @see java.lang.String#startsWith
-     */
-    public static boolean startsWithIgnoreCase(String str, String prefix) {
-        if (str == null || prefix == null) {
-            return false;
-        }
-        if (str.startsWith(prefix)) {
-            return true;
-        }
-        if (str.length() < prefix.length()) {
-            return false;
-        }
-        String lcStr = str.substring(0, prefix.length()).toLowerCase(Locale.ROOT);
-        String lcPrefix = prefix.toLowerCase(Locale.ROOT);
-        return lcStr.equals(lcPrefix);
+    @Override
+    public AzureClient client() {
+        return new AzureClientMock();
+    }
+
+    @Override
+    public AzureClient client(String account, String key) {
+        return new AzureClientMock();
     }
 }
