@@ -106,6 +106,6 @@ public abstract class AbstractAzureRepositoryServiceTest extends AbstractAzureTe
         String container = internalCluster().getInstance(Settings.class).get("repositories.azure.container");
         logger.info("--> remove blobs in container [{}]", container);
         AzureStorageService client = internalCluster().getInstance(AzureStorageService.class);
-        client.deleteFiles(container, path);
+        client.client().deleteFiles(container, path);
     }
 }

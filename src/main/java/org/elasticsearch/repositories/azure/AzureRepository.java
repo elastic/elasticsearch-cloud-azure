@@ -21,6 +21,8 @@ package org.elasticsearch.repositories.azure;
 
 import com.microsoft.azure.storage.StorageException;
 import org.elasticsearch.cloud.azure.blobstore.AzureBlobStore;
+import org.elasticsearch.cloud.azure.storage.AzureClient;
+import org.elasticsearch.cloud.azure.storage.AzureStorageService;
 import org.elasticsearch.cloud.azure.storage.AzureStorageService.Storage;
 import org.elasticsearch.cluster.metadata.MetaData;
 import org.elasticsearch.cluster.metadata.SnapshotId;
@@ -66,6 +68,8 @@ public class AzureRepository extends BlobStoreRepository {
 
     private final AzureBlobStore blobStore;
 
+    private final AzureClient azureClient;
+
     private final BlobPath basePath;
 
     private ByteSizeValue chunkSize;
@@ -74,14 +78,18 @@ public class AzureRepository extends BlobStoreRepository {
 
     @Inject
     public AzureRepository(RepositoryName name, RepositorySettings repositorySettings,
-                           IndexShardRepository indexShardRepository,
-                           AzureBlobStore azureBlobStore) throws IOException, URISyntaxException, StorageException {
+                           IndexShardRepository indexShardRepository, AzureStorageService azureStorageService)
+            throws IOException, URISyntaxException, StorageException {
         super(name.getName(), repositorySettings, indexShardRepository);
 
         String container = repositorySettings.settings().get(Repository.CONTAINER,
                 settings.get(Storage.CONTAINER, CONTAINER_DEFAULT));
 
-        this.blobStore = azureBlobStore;
+        this.azureClient = azureStorageService.client(
+                repositorySettings.settings().get("account", settings.get(Storage.ACCOUNT)),
+                repositorySettings.settings().get("key", settings.get(Storage.KEY)));
+        this.blobStore = new AzureBlobStore(name, settings, repositorySettings, this.azureClient);
+
         this.chunkSize = repositorySettings.settings().getAsBytesSize(Repository.CHUNK_SIZE,
                 settings.getAsBytesSize(Storage.CHUNK_SIZE, new ByteSizeValue(64, ByteSizeUnit.MB)));
 

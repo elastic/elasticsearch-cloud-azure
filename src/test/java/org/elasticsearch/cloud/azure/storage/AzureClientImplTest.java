@@ -24,10 +24,10 @@ import org.elasticsearch.test.ElasticsearchTestCase;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.elasticsearch.cloud.azure.storage.AzureStorageServiceImpl.blobNameFromUri;
+import static org.elasticsearch.cloud.azure.storage.AzureClientImpl.blobNameFromUri;
 import static org.hamcrest.Matchers.is;
 
-public class AzureStorageServiceTest extends ElasticsearchTestCase {
+public class AzureClientImplTest extends ElasticsearchTestCase {
     public void testBlobNameFromUri() throws URISyntaxException {
         String name = blobNameFromUri(new URI("https://myservice.azure.net/container/path/to/myfile"));
         assertThat(name, is("path/to/myfile"));

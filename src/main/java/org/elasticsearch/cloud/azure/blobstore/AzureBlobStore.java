@@ -20,12 +20,11 @@
 package org.elasticsearch.cloud.azure.blobstore;
 
 import com.microsoft.azure.storage.StorageException;
-import org.elasticsearch.cloud.azure.storage.AzureStorageService;
+import org.elasticsearch.cloud.azure.storage.AzureClient;
 import org.elasticsearch.common.blobstore.BlobContainer;
 import org.elasticsearch.common.blobstore.BlobPath;
 import org.elasticsearch.common.blobstore.BlobStore;
 import org.elasticsearch.common.component.AbstractComponent;
-import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.repositories.RepositoryName;
 import org.elasticsearch.repositories.RepositorySettings;
@@ -40,16 +39,14 @@ import static org.elasticsearch.repositories.azure.AzureRepository.CONTAINER_DEF
  */
 public class AzureBlobStore extends AbstractComponent implements BlobStore {
 
-    private final AzureStorageService client;
+    private final AzureClient client;
 
     private final String container;
     private final String repositoryName;
 
-    @Inject
-    public AzureBlobStore(RepositoryName name, Settings settings, RepositorySettings repositorySettings,
-                          AzureStorageService client) throws URISyntaxException, StorageException {
+    public AzureBlobStore(RepositoryName name, Settings settings,  RepositorySettings repositorySettings, AzureClient azureClient) throws URISyntaxException, StorageException {
         super(settings);
-        this.client = client;
+        this.client = azureClient;
         this.container = repositorySettings.settings().get("container", settings.get(CONTAINER, CONTAINER_DEFAULT));
         this.repositoryName = name.getName();
     }
@@ -59,7 +56,7 @@ public class AzureBlobStore extends AbstractComponent implements BlobStore {
         return container;
     }
 
-    public AzureStorageService client() {
+    public AzureClient client() {
         return client;
     }
 
